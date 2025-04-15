@@ -1,30 +1,30 @@
-### Step 1: 克隆5.1程序
+### Step 1: Cloning 5.1 program
      git clone https://github.com/Regina224385133/sit323-2025-prac5p.git
 
-### Step 2: 创建Docker镜像
-**1.创建Dockerfile文件**
+### Step 2: Creating a Docker image
+**1.Create the Dockerfile file**
 
-**2.构建镜像**
+**2.Building an image**
 ```
      docker build -t regina224385133/323_2.1p
 ```
-**登录并推送镜像到Docker Hub**
+**Log in and push the image to Docker Hub**
 
      docker login
      docker puush regina224385133/323_2.1p
 
 
 
-### Step 3: 部署到 Kubernetes
+### Step 3: Deploying to Kubernetes
 
- **1.启动 Minikube**
+ **1.Start Minikubee**
 ```
    minikube start
    minikube start --driver=docker
 ```
-**2.创建 Deployment 文件**
+**2.Creating a Deployment File**
 
-在项目中新建文件夹 kubernetes/，里面建文件 deployment.yaml：
+Create a new folder in the project, kubernetes/, with the file deployment.yaml in it：
 
  ```
 apiVersion: apps/v1
@@ -49,8 +49,8 @@ spec:
 
   ```
 
-**3. 创建 Service 文件**
-在 kubernetes/ 文件夹中再建一个 service.yaml
+**3. Creating a Service File**
+Make another service.yaml in the kubernetes/ folder
  ```
 apiVersion: v1
 kind: Service
@@ -66,9 +66,9 @@ spec:
       nodePort: 30036
  ```
 
-### Step 4: 部署并访问应用
+### Step 4: Deploy and access applications
 
-**1. 部署到 Kubernetes**:
+**1. Deploying to Kubernetes**:
    
    
         kubectl apply -f kubernetes/deployment.yaml
@@ -76,7 +76,7 @@ spec:
 
     
 
-**2.访问你的应用**:
+**2.Access to your application**:
 
    
         minikube service node-app-service
