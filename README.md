@@ -1,113 +1,89 @@
-### Step 1: Install Docker
+### Step 1: 克隆5.1程序
+     git clone https://github.com/Regina224385133/sit323-2025-prac5p.git
 
-### Step 2: Clone the Web Application
+### Step 2: 创建Docker镜像
+**1.创建Dockerfile文件**
 
-**Clone the repository**:
+**2.构建镜像**
+```
+     docker build -t regina224385133/323_2.1p
+```
+**登录并推送镜像到Docker Hub**
 
-     git clone https://github.com/yourusername/your-app.git
+     docker login
+     docker puush regina224385133/323_2.1p
 
-### Step 3: Create a Dockerfile
 
-In the root of your project, create a `Dockerfile`.
 
-1. **Create a `Dockerfile`**:
+### Step 3: 部署到 Kubernetes
 
-   ```Dockerfile
-   # Use an official Node.js runtime as a parent image
-   FROM node:14
+ **1.启动 Minikube**
+```
+   minikube start
+   minikube start --driver=docker
+```
+**2.创建 Deployment 文件**
 
-   # Set the working directory in the container
-   WORKDIR /usr/src/app
+在项目中新建文件夹 kubernetes/，里面建文件 deployment.yaml：
 
-   # Copy package.json and package-lock.json to the working directory
-   COPY package*.json ./
+ ```
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: node-app-deployment
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: node-app
+  template:
+    metadata:
+      labels:
+        app: node-app
+    spec:
+      containers:
+      - name: node-app
+        image: yourdockerhubusername/node-app:1.0
+        ports:
+        - containerPort: 3000
 
-   # Install any needed packages
-   RUN npm install
+  ```
 
-   # Bundle the app source inside the container
-   COPY . .
+**3. 创建 Service 文件**
+在 kubernetes/ 文件夹中再建一个 service.yaml
+ ```
+apiVersion: v1
+kind: Service
+metadata:
+  name: node-app-service
+spec:
+  type: NodePort
+  selector:
+    app: node-app
+  ports:
+    - port: 3000
+      targetPort: 3000
+      nodePort: 30036
+ ```
 
-   # Expose the port the app runs on (assumes your app uses port 3000)
-   EXPOSE 3000
+### Step 4: 部署并访问应用
 
-   # Run the app when the container starts
-   CMD ["npm", "start"]
-   ```
-
-### Step 4: Build the Docker Image
-
-Once the `Dockerfile` is created,build the Docker image.
-
-1. **Build the Docker image**:
+**1. 部署到 Kubernetes**:
    
-     ```bash
-     docker build -t 323_2.1p .
-     ```
-
-2. **Verify Image**:
-
-     ```bash
-     docker images
-     ```
-
-### Step 5: Create a Docker Compose File
-
-1. **Create a `docker-compose.yml` file**:
-
-   ```yaml
-   version: '3'
-   services:
-     app:
-       image: your-image-name
-       build:
-         context: .
-       ports:
-         - "3000:3000"
-       restart: unless-stopped
-   ```
-### Step 6: Start the Docker Compose Environment
-
-1. **Start the containers**:
-  
-   ```bash
-   docker-compose up -d
-   ```
-
-2. **Verify the containers are running**:
- 
-   ```bash
-   docker-compose ps
-   ```
-
-3. **Access the application**:
-   Open browser and go to `http://localhost:3000` to test if application is running properly.
-
-### Step 7: Test the Application
-
-Open browser and visit `http://localhost:3000` . We can see the web application running inside the Docker container.
-
-### Step 8: Push the Docker Image to a Registry
-
-1. **Login to Docker Hub**:
-
-   ```bash
-   docker login
-   ```
-
-2. **Tag the Docker image**:
-
-   ```bash
-   docker tag 323_2.1p regina224385133/323_2.1p
-   ```
-
-3. **Push the Docker image**:
    
-   ```bash
-   docker push regina224385133/323_2.1p
-   ```
+        kubectl apply -f kubernetes/deployment.yaml
+        kubectl apply -f kubernetes/service.yaml
 
-### Step 9: Submit Code and Dockerfile
+    
+
+**2.访问你的应用**:
+
+   
+        minikube service node-app-service
+
+
+
+### Step 5: Submit Code and Dockerfile
 
 1. **Push code to GitHub**:
    initialize a Git repository in project folder:
@@ -118,12 +94,12 @@ Open browser and visit `http://localhost:3000` . We can see the web application 
      ```
 
 2. **Create a GitHub repository**:
-   - Go to GitHub and create a new repository called `sit323-2025-prac5p`.
+   - Go to GitHub and create a new repository called `sit323-2025-prac6.1p`.
 
 3. **Push code to GitHub**:
    - Add the remote repository and push code:
      ```bash
-     git remote add origin https://github.com/username/sit323-2025-prac5p.git
+     git remote add origin https://github.com/regina224385133/sit323-6.1p.git
      git push -u origin master
      ```
 
